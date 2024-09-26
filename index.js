@@ -10,8 +10,12 @@ const { user } = require("./user");
 const { admin } = require("./admin");
 const { course } = require("./course");
 
+
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000/',
+    credentials: true
+}));
 app.use(cookieParser());
 app.use("/user", user);
 app.use("/admin", admin);

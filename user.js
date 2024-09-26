@@ -23,7 +23,7 @@ router.post("/signin", async (req, res) =>
     if (response)
     {
         const token = jwt.sign({ id: response._id.toString() }, JWT_USER_PASSWORD);
-        res.status(200).cookie("token", token, { httpOnly: true }).json({ token: token });
+        res.status(301).cookie("token", token, { httpOnly: true }).send({ message: "signed in" });
     }
     else
     {
@@ -65,6 +65,24 @@ router.get("/courses", userMiddleware, async (req, res) =>
     } catch (err)
     {
         res.status(500).json({ message: "error fetching courses!" });
+    }
+});
+
+router.get("/me", userMiddleware, async (req, res) =>
+{
+    const userId = req.userId;
+
+    try
+    {
+        const userData = await userModel.findOne({ _id: userId });
+        res.status(302).json({
+            firstName: userData.firstName,
+            lastName: userData.lastName
+        });
+        console.log(userData);
+    } catch (err)
+    {
+        res.status(500).json({ message: "error fetching user details !" });
     }
 });
 

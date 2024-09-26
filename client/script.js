@@ -13,7 +13,7 @@ let cons_mode = consumer_modes.USER;
 
 refreshCredentialLayout();
 
-//  Send RPCs via primary
+//  Send SignIn/SignOut RPCs via primary
 async function primary()
 {
     const input_email = document.getElementById("input_email").value;
@@ -53,8 +53,49 @@ async function primary()
 
     if (response)
     {
-        document.cookie = response.headers.getSetCookie();
-        console.log(response.json);
+        const responseCookie = response.headers.getSetCookie();
+
+        if (response.status >= 300 && response.status < 400)
+        {
+            document.cookie = response.headers.getSetCookie();
+            ClearMainDivLayout();
+            if (cons_mode === consumer_modes.USER)
+            {
+                const requestOptions = {
+                    method: "GET",
+                    redirect: "follow"
+                };
+
+                //const userDetails = fetch("http://localhost:3000/user/me", requestOptions);
+
+                const userDetails = fetch("http://localhost:3000/user/me", requestOptions)
+                    .then((response) => response.text())
+                    .then((result) =>
+                    {
+                        console.log(result);
+                        const userDetails = JSON.parse(result);
+                        RenderUserLayout(userDetails.firstName + " " + userDetails.lastName);
+                    }
+                    )
+                    .catch((error) => console.error(error));
+
+                /* const userDetails = await fetch(`http://localhost:3000/user/me`, {
+                     method: 'GET',
+                     headers: {
+                         'Content-type': 'application/json',
+                         'Access-Control-Allow-Credentials': true
+                     },
+                     credentials: "same-origin"
+                 });*/
+
+                //
+            }
+            else
+            {
+                // Render admin layout
+                // fetch admin details here
+            }
+        }
     }
 }
 
@@ -186,14 +227,120 @@ function RenderCredentialsLayout()
     maindiv.appendChild(tertiaryButton);
 }
 
-function ClearCredentialsLayout()
+function RenderPreviewCourses(courses)
+{
+    for (let i = 0; i < courses.length; i++)
+    {
+        const courseTitle = document.createElement("span");
+        courseTitle.innerHTML = courses[i].title;
+        courseTitle.className = "style_course";
+
+        const courseDesc = document.createElement("span");
+        courseDesc.innerHTML = courses[i].description;
+        courseDesc.className = "style_course";
+
+        maindiv.appendChild(document.createElement("hr"));
+        maindiv.appendChild(courseTitle);
+        maindiv.appendChild(document.createElement("br"));
+        maindiv.appendChild(courseDesc);
+        maindiv.appendChild(document.createElement("hr"));
+    }
+}
+
+function RenderPurchasedCourses()
+{
+
+}
+
+function RenderUserLayout(username)
+{
+    const maindiv = document.getElementById("maindiv");
+    const accountTypeText = document.createElement("span");
+    accountTypeText.innerHTML = "User " + username;
+
+    maindiv.appendChild(accountTypeText);
+    maindiv.appendChild(document.createElement("br"));
+
+    const previewButton = document.createElement("button");
+    previewButton.id = "preview_button";
+    previewButton.onclick = PreviewCourses;
+    previewButton.innerText = "Preview Courses";
+    maindiv.appendChild(previewButton);
+
+    maindiv.appendChild(document.createElement("hr"));
+
+    const coursesButton = document.createElement("button");
+    coursesButton.id = "courses_button";
+    coursesButton.onclick = ViewOwnedCourses;
+    coursesButton.innerText = "View Courses";
+    maindiv.appendChild(coursesButton);
+}
+
+function RenderAdminLayout()
+{
+    const maindiv = document.getElementById("maindiv");
+    const accountTypeText = document.createElement("span");
+    accountTypeText.innerHTML = "Admin ";
+
+    maindiv.appendChild(accountTypeText);
+    maindiv.appendChild(document.createElement("br"));
+}
+
+async function PreviewCourses()
+{
+    const requestOptions = {
+        method: "GET",
+        redirect: "follow"
+    };
+
+    fetch("http://localhost:3000/course/preview", requestOptions)
+        .then((response) => response.text())
+        .then((result) =>
+        {
+            const courses = [{}];
+            const allCoursesDetails = JSON.parse(result);
+            for (let i = 0; i < allCoursesDetails.courses.length; i++)
+            {
+                const title = allCoursesDetails.courses[i].title;
+                const description = allCoursesDetails.courses[i].description;
+
+                courses.push({ title: title, description: description });
+            }
+
+            RenderPreviewCourses(courses);
+        }
+        )
+        .catch((error) => console.error(error));
+}
+
+async function ViewOwnedCourses()
+{
+    const requestOptions = {
+        method: "GET",
+        redirect: "follow"
+    };
+
+    fetch("http://localhost:3000/user/courses", requestOptions)
+        .then((response) => response.text())
+        .then((result) =>
+        {
+
+            const ownedCoursesDetails = JSON.parse(result);
+            console.log(ownedCoursesDetails);
+            // DOM logic here
+        }
+        )
+        .catch((error) => console.error(error));
+}
+
+function ClearMainDivLayout()
 {
     document.getElementById("maindiv").innerHTML = "";
 }
 
 function refreshCredentialLayout()
 {
-    ClearCredentialsLayout();
+    ClearMainDivLayout();
     RenderCredentialsLayout();
 }
 

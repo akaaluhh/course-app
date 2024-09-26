@@ -22,7 +22,7 @@ router.post("/signin", async (req, res) =>
     if (response)
     {
         const token = jwt.sign({ id: response._id.toString() }, JWT_ADMIN_PASSWORD);
-        res.status(200).cookie("token", token, { httpOnly: true }).json({ token: token });
+        res.status(301).cookie("token", token, { httpOnly: true }).json({ token: token });
     }
     else
     {
