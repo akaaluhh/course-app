@@ -41,12 +41,17 @@ async function primary()
 
     const response = await fetch(`http://localhost:3000/${cons_mode === consumer_modes.USER ? "user" : "admin"}/${op_mode === operation_modes.SIGNIN ? "signin" : "signup"}`, {
         method: 'POST',
-        headers: { 'Content-type': 'application/json' },
+        headers: {
+            'Content-type': 'application/json',
+            'Access-Control-Allow-Credentials': true
+        },
+        credentials: "same-origin",
         body: JSON.stringify(request_body)
     });
 
     if (response)
     {
+        document.cookie = response.headers.getSetCookie();
         console.log(response.json);
     }
 }

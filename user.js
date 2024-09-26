@@ -24,7 +24,7 @@ router.post("/signin", async (req, res) =>
     {
         const token = jwt.sign({ id: response._id.toString() }, JWT_USER_PASSWORD);
         // TODO: do cookie based logic here
-        res.json({ token: token });
+        res.status(200).cookie("token", token, { httpOnly: true }).json({ token: token });
     }
     else
     {
@@ -48,7 +48,7 @@ router.post("/signup", async (req, res) =>
             firstName: firstName,
             lastName: lastName
         });
-        res.status(404).json({ message: "user created !" });
+        res.status(200).json({ message: "user created !" });
     } catch (err)
     {
         res.status(501).json({ message: "user email in use!" });
