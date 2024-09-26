@@ -11,6 +11,8 @@ const operation_modes = Object.freeze({
 let op_mode = operation_modes.SIGNIN;
 let cons_mode = consumer_modes.USER;
 
+refreshCredentialLayout();
+
 //  Send RPCs via primary
 async function primary()
 {
@@ -59,16 +61,17 @@ async function primary()
 //  Switch between SignIn/SignUp operation modes via secondary {  operation mode  }
 async function secondary()
 {
+    console.log("SECONDARY PRINTED");
     clearInputFields();
     switch (op_mode)
     {
         case operation_modes.SIGNIN:
-            AddSignUpElements();
             op_mode = operation_modes.SIGNUP;
+            refreshCredentialLayout();
             break;
         case operation_modes.SIGNUP:
-            RemoveSignUpElements();
             op_mode = operation_modes.SIGNIN;
+            refreshCredentialLayout();
             break;
         default:
             break;
@@ -103,65 +106,95 @@ function clearInputFields()
     }
 }
 
-function AddSignUpElements()
+function RenderCredentialsLayout()
 {
-    const inputdiv = document.getElementById("inputdiv");
-    const firstNameInput = document.createElement("input");
-    const lastNameInput = document.createElement("input");
-    const emailInput = document.getElementById("user_email");
+    const maindiv = document.getElementById("maindiv");
+    const accountTypeText = document.createElement("span");
+    const inputdiv = document.createElement("div");
+    const emailInput = document.createElement("input");
+    const pwInput = document.createElement("input");
+    const fnameInput = document.createElement("input");
+    const lnameInput = document.createElement("input");
 
-    firstNameInput.type = "text";
-    firstNameInput.placeholder = "First Name";
-    firstNameInput.id = "input_fname";
+    inputdiv.id = "inputdiv";
 
-    lastNameInput.type = "text";
-    lastNameInput.placeholder = "Last Name";
-    lastNameInput.id = "input_lname";
+    accountTypeText.className = "account_type";
+    accountTypeText.id = "account_type";
+    accountTypeText.innerHTML = `${cons_mode === consumer_modes.ADMIN ? "Admin" : "User"}` + ` ` + `${op_mode === operation_modes.SIGNIN ? "SignIn" : "SignUp"}`;
 
+    maindiv.appendChild(accountTypeText);
+    maindiv.innerHTML += "<br>";
+    maindiv.appendChild(inputdiv);
+
+    emailInput.type = "text";
+    emailInput.placeholder = "Email";
+    emailInput.id = "input_email";
+
+    pwInput.type = "text";
+    pwInput.placeholder = "Password";
+    pwInput.id = "input_pw";
+
+    fnameInput.type = "text";
+    fnameInput.placeholder = "First Name";
+    fnameInput.id = "input_fname";
+
+    lnameInput.type = "text";
+    lnameInput.placeholder = "Last Name";
+    lnameInput.id = "input_lname";
+
+    const primaryButton = document.createElement("button");
+    primaryButton.id = "primary_button";
+    primaryButton.onclick = primary;
+    primaryButton.innerText = `${op_mode === operation_modes.SIGNIN ? "SignIn" : "SignUp"}`;
+
+    const secondaryButton = document.createElement("button");
+    secondaryButton.id = "secondary_button";
+    secondaryButton.onclick = secondary;
+    secondaryButton.innerText = `${op_mode === operation_modes.SIGNIN ? "SignUp" : "SignIn"}`;
+
+    const tertiaryButton = document.createElement("button");
+    tertiaryButton.id = "tertiary_button";
+    tertiaryButton.onclick = tertiary;
+    tertiaryButton.innerText = `${cons_mode === consumer_modes.ADMIN ? "Browse" : "Creator"}`;
+
+    const operationModeText = document.createElement("span");
+    operationModeText.className = "operation_mode";
+    operationModeText.id = "operation_mode";
+    operationModeText.innerText = `${op_mode === operation_modes.SIGNIN ? "Don't have an account ?" : "Already have an account ?"}`;
+
+    const consumerModeText = document.createElement("span");
+    consumerModeText.className = "consumer_mode";
+    consumerModeText.id = "consumer_mode";
+    consumerModeText.innerText = `${cons_mode === consumer_modes.ADMIN ? "Browse courses !" : "Are you a Creator ?"}`;
+
+    inputdiv.appendChild(emailInput);
     inputdiv.innerHTML += "<br>";
-    inputdiv.appendChild(firstNameInput);
-    inputdiv.innerHTML += "<br>";
-    inputdiv.appendChild(lastNameInput);
-
-    const primaryButton = document.getElementById("primary_button");
-    primaryButton.innerText = "Sign Up";
-
-    const secondaryButton = document.getElementById("secondary_button");
-    secondaryButton.innerText = "Sign In";
-
-    const operation_mode_text = document.getElementById("operation_mode");
-    operation_mode_text.innerText = "Already have an account ?";
-
-    const account_type_text = document.getElementById("account_type");
-    account_type_text.innerText = `${cons_mode === consumer_modes.ADMIN ? "Admin" : "User"} SignUp`;
+    inputdiv.appendChild(pwInput);
+    if (op_mode === operation_modes.SIGNUP)
+    {
+        inputdiv.innerHTML += "<br>";
+        inputdiv.appendChild(fnameInput);
+        inputdiv.innerHTML += "<br>";
+        inputdiv.appendChild(lnameInput);
+    }
+    maindiv.appendChild(primaryButton);
+    maindiv.appendChild(document.createElement("br"));  // NOTE:- maindiv.innerHTML += "<br>" messes up the function binding for the above button
+    maindiv.appendChild(operationModeText);
+    maindiv.appendChild(secondaryButton);
+    maindiv.appendChild(document.createElement("br"));
+    maindiv.appendChild(consumerModeText);
+    maindiv.appendChild(tertiaryButton);
 }
 
-function RemoveSignUpElements()
+function ClearCredentialsLayout()
 {
-    const inputdiv = document.getElementById("inputdiv");
-    const firstNameInput = document.getElementById("input_fname");
-    const lastNameInput = document.getElementById("input_lname");
+    document.getElementById("maindiv").innerHTML = "";
+}
 
-    let linebreak = firstNameInput.previousSibling;
-    inputdiv.removeChild(linebreak);
-
-    linebreak = lastNameInput.previousSibling;
-    inputdiv.removeChild(linebreak);
-
-    inputdiv.removeChild(firstNameInput);
-    inputdiv.removeChild(lastNameInput);
-
-    const primaryButton = document.getElementById("primary_button");
-    primaryButton.innerText = "Sign In";
-
-    const secondaryButton = document.getElementById("secondary_button");
-    secondaryButton.innerText = "Sign Up";
-
-    const operation_mode_text = document.getElementById("operation_mode");
-    operation_mode_text.innerText = "Don't have an account ?"
-
-    const account_type_text = document.getElementById("account_type");
-    account_type_text.innerText = `${cons_mode === consumer_modes.ADMIN ? "Admin" : "User"} SignIn`;
+function refreshCredentialLayout()
+{
+    ClearCredentialsLayout();
+    RenderCredentialsLayout();
 }
 
 function AdminMode()
@@ -173,7 +206,7 @@ function AdminMode()
     const consumer_mode_text = document.getElementById("consumer_mode");
     consumer_mode_text.innerText = "Browse courses !";
 
-    const tertiary_button = document.getElementById("tertiary");
+    const tertiary_button = document.getElementById("tertiary_button");
     tertiary_button.innerText = "Browse";
 }
 
@@ -186,6 +219,6 @@ function UserMode()
     const consumer_mode_text = document.getElementById("consumer_mode");
     consumer_mode_text.innerText = "Are you a Creator ?";
 
-    const tertiary_button = document.getElementById("tertiary");
+    const tertiary_button = document.getElementById("tertiary_button");
     tertiary_button.innerText = "Creator";
 }

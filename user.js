@@ -23,7 +23,6 @@ router.post("/signin", async (req, res) =>
     if (response)
     {
         const token = jwt.sign({ id: response._id.toString() }, JWT_USER_PASSWORD);
-        // TODO: do cookie based logic here
         res.status(200).cookie("token", token, { httpOnly: true }).json({ token: token });
     }
     else
