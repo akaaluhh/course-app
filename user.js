@@ -61,7 +61,7 @@ router.get("/courses", userMiddleware, async (req, res) =>
     try
     {
         const courses = await purchaseModel.find({ userId: userId });
-        res.status(200).json(courses);
+        res.status(200).json({ courses });
     } catch (err)
     {
         res.status(500).json({ message: "error fetching courses!" });

@@ -66,10 +66,8 @@ async function primary()
                     redirect: "follow"
                 };
 
-                //const userDetails = fetch("http://localhost:3000/user/me", requestOptions);
-
-                const userDetails = fetch("http://localhost:3000/user/me", requestOptions)
-                    .then((response) => response.text())
+                /* const userDetails = fetch("http://localhost:3000/user/me", requestOptions)
+                    .then((response) => { return response.text(); })
                     .then((result) =>
                     {
                         console.log(result);
@@ -77,23 +75,25 @@ async function primary()
                         RenderUserLayout(userDetails.firstName + " " + userDetails.lastName);
                     }
                     )
-                    .catch((error) => console.error(error));
+                    .catch((error) => console.error(error)); */
 
-                /* const userDetails = await fetch(`http://localhost:3000/user/me`, {
-                     method: 'GET',
-                     headers: {
-                         'Content-type': 'application/json',
-                         'Access-Control-Allow-Credentials': true
-                     },
-                     credentials: "same-origin"
-                 });*/
+                const response = await fetch(`http://localhost:3000/user/me`, requestOptions);
+                const userDetails = await response.json();
 
-                //
+                console.log(userDetails);
+                RenderUserLayout(userDetails.firstName + " " + userDetails.lastName);
             }
             else
             {
-                // Render admin layout
-                // fetch admin details here
+                const requestOptions = {
+                    method: "GET",
+                    redirect: "follow"
+                };
+
+                const response = await fetch(`http://localhost:3000/admin/me`, requestOptions);
+                const adminDetails = await response.json();
+
+                RenderAdminLayout(adminDetails.firstName + " " + adminDetails.lastName);
             }
         }
     }
@@ -247,9 +247,24 @@ function RenderPreviewCourses(courses)
     }
 }
 
-function RenderPurchasedCourses()
+function RenderPurchasedCourses(courses)
 {
+    for (let i = 0; i < courses.length; i++)
+    {
+        const courseTitle = document.createElement("span");
+        courseTitle.innerHTML = courses[i].title;
+        courseTitle.className = "style_course";
 
+        const courseDesc = document.createElement("span");
+        courseDesc.innerHTML = courses[i].description;
+        courseDesc.className = "style_course";
+
+        maindiv.appendChild(document.createElement("hr"));
+        maindiv.appendChild(courseTitle);
+        maindiv.appendChild(document.createElement("br"));
+        maindiv.appendChild(courseDesc);
+        maindiv.appendChild(document.createElement("hr"));
+    }
 }
 
 function RenderUserLayout(username)
@@ -293,24 +308,10 @@ async function PreviewCourses()
         redirect: "follow"
     };
 
-    fetch("http://localhost:3000/course/preview", requestOptions)
-        .then((response) => response.text())
-        .then((result) =>
-        {
-            const courses = [{}];
-            const allCoursesDetails = JSON.parse(result);
-            for (let i = 0; i < allCoursesDetails.courses.length; i++)
-            {
-                const title = allCoursesDetails.courses[i].title;
-                const description = allCoursesDetails.courses[i].description;
+    const response = await fetch("http://localhost:3000/course/preview", requestOptions);
+    const courseData = await response.json();
 
-                courses.push({ title: title, description: description });
-            }
-
-            RenderPreviewCourses(courses);
-        }
-        )
-        .catch((error) => console.error(error));
+    RenderPreviewCourses(courseData.courses);
 }
 
 async function ViewOwnedCourses()
@@ -320,17 +321,10 @@ async function ViewOwnedCourses()
         redirect: "follow"
     };
 
-    fetch("http://localhost:3000/user/courses", requestOptions)
-        .then((response) => response.text())
-        .then((result) =>
-        {
+    const response = await fetch("http://localhost:3000/user/courses", requestOptions);
+    const ownedCoursesData = await response.json();
 
-            const ownedCoursesDetails = JSON.parse(result);
-            console.log(ownedCoursesDetails);
-            // DOM logic here
-        }
-        )
-        .catch((error) => console.error(error));
+    RenderPurchasedCourses(ownedCoursesData.courses);
 }
 
 function ClearMainDivLayout()
