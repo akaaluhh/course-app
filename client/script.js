@@ -324,7 +324,7 @@ async function ViewOwnedCourses()
     const response = await fetch("http://localhost:3000/user/courses", requestOptions);
     const ownedCoursesData = await response.json();
 
-    RenderPurchasedCourses(ownedCoursesData.courses);
+    RenderPurchasedCourses(ownedCoursesData.purchasedCourses);
 }
 
 function ClearMainDivLayout()

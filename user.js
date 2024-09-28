@@ -4,7 +4,7 @@ const { JWT_USER_PASSWORD } = require("./config");
 const { userMiddleware } = require("./middlewares/user");
 
 const router = express.Router();
-const { userModel, purchaseModel } = require("./db");
+const { userModel, purchaseModel, courseModel } = require("./db");
 
 router.use(express.json());
 
@@ -60,8 +60,17 @@ router.get("/courses", userMiddleware, async (req, res) =>
 
     try
     {
-        const courses = await purchaseModel.find({ userId: userId });
-        res.status(200).json({ courses });
+        const purchasedCourseData = await purchaseModel.find({ userId: userId });
+
+        const purchasedCourses = [];
+        for (let i = 0; i < purchasedCourseData.length; i++)
+        {
+            const courseId = purchasedCourseData[i].courseId;
+            const courseData = await courseModel.findOne({ _id: courseId });
+            purchasedCourses.push(courseData);
+        }
+
+        res.status(200).json({ purchasedCourses });
     } catch (err)
     {
         res.status(500).json({ message: "error fetching courses!" });
