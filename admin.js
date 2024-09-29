@@ -64,6 +64,24 @@ router.post("/signup", async (req, res) =>
     }
 });
 
+router.get("/me", adminMiddleware, async (req, res) =>
+{
+    const userId = req.userId;
+
+    try
+    {
+        const userData = await adminModel.findOne({ _id: userId });
+        return res.status(302).json({
+            firstName: userData.firstName,
+            lastName: userData.lastName
+        });
+    }
+    catch (err)
+    {
+        return res.status(500).json({ message: "error fetching admin details !" });
+    }
+});
+
 router.post("/course", adminMiddleware, async (req, res) =>
 {
     const userId = req.userId;
