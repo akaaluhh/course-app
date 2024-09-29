@@ -269,6 +269,8 @@ function RenderPurchasedCourses(courses)
 
 function RenderUserLayout(username)
 {
+    const gap = "30px";
+
     const maindiv = document.getElementById("maindiv");
     const accountTypeText = document.createElement("span");
     accountTypeText.innerHTML = "User " + username;
@@ -280,15 +282,27 @@ function RenderUserLayout(username)
     previewButton.id = "preview_button";
     previewButton.onclick = PreviewCourses;
     previewButton.innerText = "Preview Courses";
-    maindiv.appendChild(previewButton);
+    previewButton.style.marginRight = gap;
 
-    maindiv.appendChild(document.createElement("hr"));
+    maindiv.appendChild(previewButton);
+    //maindiv.appendChild(document.createElement("hr"));
 
     const coursesButton = document.createElement("button");
     coursesButton.id = "courses_button";
     coursesButton.onclick = ViewOwnedCourses;
     coursesButton.innerText = "View Courses";
+    coursesButton.style.marginLeft = gap;
+
     maindiv.appendChild(coursesButton);
+    maindiv.appendChild(document.createElement("br"));
+
+    const signOutButton = document.createElement("button");
+    signOutButton.id = "back_button";
+    // signOutButton.onclick = button binding here
+    signOutButton.innerText = "SignOut";
+    signOutButton.style.marginTop = "5px";
+
+    maindiv.appendChild(signOutButton);
 }
 
 function RenderAdminLayout()
