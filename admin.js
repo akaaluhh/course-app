@@ -1,5 +1,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const { JWT_ADMIN_PASSWORD } = require("./config");
 const { adminMiddleware } = require("./middlewares/admin");
 
@@ -13,20 +14,31 @@ router.post("/signin", async (req, res) =>
     const email = req.body.email;
     const password = req.body.password;
 
-    // TODO: when DB password is hashed, user provided pw can't be directly compared with DB pw (using bcrypt)
     const response = await adminModel.findOne({
         email: email,
-        password: password
-    });
-
-    if (response)
+    }).select("+password");
+    if (!response)
     {
-        const token = jwt.sign({ id: response._id.toString() }, JWT_ADMIN_PASSWORD);
-        res.status(301).cookie("token", token, { httpOnly: true }).json({ token: token });
+        return res.status(401).json({ message: "Account does not exist !" });
     }
     else
     {
-        res.status(403).json({ message: "incorrect credentials !" });
+        const pwvalid = await bcrypt.compare(password, response.password, (err, result) =>
+        {
+            if (err)
+            {
+                return res.status(401).send(err);
+            }
+            if (result)
+            {
+                const token = jwt.sign({ id: response._id.toString() }, JWT_ADMIN_PASSWORD);
+                return res.status(301).cookie("token", token, { httpOnly: true }).send({ message: "signed in" });
+            }
+            else
+            {
+                return res.json({ message: "Admin email or password incorrect !" });
+            }
+        });
     }
 });
 
@@ -36,7 +48,6 @@ router.post("/signup", async (req, res) =>
     const password = req.body.password;
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
-    // TODO: hash the password so plaintext pw is not stored in DB
 
     try
     {

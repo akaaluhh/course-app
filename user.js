@@ -1,5 +1,6 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const { JWT_USER_PASSWORD } = require("./config");
 const { userMiddleware } = require("./middlewares/user");
 
@@ -13,21 +14,31 @@ router.post("/signin", async (req, res) =>
     const email = req.body.email;
     const password = req.body.password;
 
-    console.log(req.body);
-    // TODO: when DB password is hashed, user provided pw can't be directly compared with DB pw (using bcrypt)
     const response = await userModel.findOne({
-        email: email,
-        password: password
-    });
-
-    if (response)
+        email: email
+    }).select("+password");
+    if (!response)
     {
-        const token = jwt.sign({ id: response._id.toString() }, JWT_USER_PASSWORD);
-        res.status(301).cookie("token", token, { httpOnly: true }).send({ message: "signed in" });
+        return res.status(401).json({ message: "Account does not exist !" });
     }
     else
     {
-        res.status(403).json({ message: "incorrect credentials !" });
+        const pwvalid = await bcrypt.compare(`${req.body.password}`, response.password, (err, result) =>
+        {
+            if (err)
+            {
+                return res.status(401).send(err);
+            }
+            if (result)
+            {
+                const token = jwt.sign({ id: response._id.toString() }, JWT_USER_PASSWORD);
+                return res.status(301).cookie("token", token, { httpOnly: true }).send({ message: "signed in" });
+            }
+            else
+            {
+                return res.json({ message: "User email or password incorrect !" });
+            }
+        });
     }
 });
 
@@ -37,7 +48,6 @@ router.post("/signup", async (req, res) =>
     const password = req.body.password;
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
-    // TODO: hash the password so plaintext pw is not stored in DB
 
     try
     {
@@ -88,7 +98,6 @@ router.get("/me", userMiddleware, async (req, res) =>
             firstName: userData.firstName,
             lastName: userData.lastName
         });
-        console.log(userData);
     } catch (err)
     {
         res.status(500).json({ message: "error fetching user details !" });
