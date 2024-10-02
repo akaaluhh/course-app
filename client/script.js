@@ -105,10 +105,11 @@ async function primary()
                 const response = await fetch(`http://localhost:3000/admin/me`, requestOptions);
                 const adminDetails = await response.json();
 
-                const { myCoursesButton, addCourseButton } = RenderAdminLayout(adminDetails.firstName + " " + adminDetails.lastName);
+                const { myCoursesButton, addCourseButton, signOutButton } = RenderAdminLayout(adminDetails.firstName + " " + adminDetails.lastName);
 
                 // myCoursesButton.onclick = 
                 // addCourseButton.onclick = 
+                signOutButton.onclick = signout;
             }
         }
     }

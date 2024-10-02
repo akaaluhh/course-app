@@ -191,7 +191,14 @@ export function RenderAdminLayout(username)
     maindiv.appendChild(addCourseButton);
     maindiv.appendChild(document.createElement("br"));
 
-    return { myCoursesButton, addCourseButton };
+    const signOutButton = document.createElement("button");
+    signOutButton.id = "back_button";
+    signOutButton.innerText = "SignOut";
+    signOutButton.style.marginTop = "5px";
+
+    maindiv.appendChild(signOutButton);
+
+    return { myCoursesButton, addCourseButton, signOutButton };
 }
 
 
