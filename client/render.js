@@ -201,6 +201,49 @@ export function RenderAdminLayout(username)
     return { myCoursesButton, addCourseButton, signOutButton };
 }
 
+export function PostCourseLayout()
+{
+    const maindiv = document.getElementById("maindiv");
+    maindiv.appendChild(document.createElement("br"));
+
+    const subdiv = document.createElement("div");
+    maindiv.appendChild(subdiv);
+
+    const LayoutHeading = document.createElement("span");
+    LayoutHeading.innerHTML = "Create a New Course !";
+    LayoutHeading.className = "main";
+
+    const Input_Title = document.createElement("input");
+    Input_Title.type = "text";
+    Input_Title.placeholder = "Title";
+    Input_Title.id = "input_CourseTitle";
+
+    const Input_Desc = document.createElement("input");
+    Input_Desc.type = "text";
+    Input_Desc.placeholder = "Description";
+    Input_Desc.id = "input_CourseDesc";
+
+    const Input_Price = document.createElement("input");
+    Input_Price.type = "text";
+    Input_Price.placeholder = "Price";
+    Input_Price.id = "input_CoursePrice";
+
+    const ConfirmButton = document.createElement("button");
+    ConfirmButton.innerText = "Publish";
+
+    subdiv.appendChild(LayoutHeading);
+    subdiv.appendChild(document.createElement("br"));
+    subdiv.appendChild(Input_Title);
+    subdiv.appendChild(document.createElement("br"));
+    subdiv.appendChild(Input_Desc);
+    subdiv.appendChild(document.createElement("br"));
+    subdiv.appendChild(Input_Price);
+    subdiv.appendChild(document.createElement("br"));
+    subdiv.appendChild(ConfirmButton);
+    subdiv.appendChild(document.createElement("br"));
+
+    return { ConfirmButton };
+}
 
 export function ClearMainDivLayout()
 {

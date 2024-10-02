@@ -2,7 +2,8 @@ import { operation_modes, consumer_modes } from './data.js';
 import
 {
     clearInputFields, RenderAdminLayout, RenderUserLayout, RenderCredentialsLayout,
-    RenderPreviewCourses, RenderPurchasedCourses, ClearMainDivLayout, AdminMode, UserMode
+    RenderPreviewCourses, RenderPurchasedCourses, ClearMainDivLayout, AdminMode, UserMode,
+    PostCourseLayout
 } from './render.js';
 
 let op_mode = operation_modes.SIGNIN;
@@ -108,7 +109,7 @@ async function primary()
                 const { myCoursesButton, addCourseButton, signOutButton } = RenderAdminLayout(adminDetails.firstName + " " + adminDetails.lastName);
 
                 // myCoursesButton.onclick = 
-                // addCourseButton.onclick = 
+                addCourseButton.onclick = PostCourseLayout;
                 signOutButton.onclick = signout;
             }
         }
