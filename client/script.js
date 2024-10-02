@@ -93,9 +93,9 @@ async function primary()
 
                 previewButton.onclick = PreviewCourses;
                 coursesButton.onclick = ViewOwnedCourses;
-                // signOutButton.onclick
+                signOutButton.onclick = signout;
             }
-            else
+            else // ADMIN
             {
                 const requestOptions = {
                     method: "GET",
@@ -105,10 +105,28 @@ async function primary()
                 const response = await fetch(`http://localhost:3000/admin/me`, requestOptions);
                 const adminDetails = await response.json();
 
-                RenderAdminLayout(adminDetails.firstName + " " + adminDetails.lastName);
+                const { myCoursesButton, addCourseButton } = RenderAdminLayout(adminDetails.firstName + " " + adminDetails.lastName);
+
+                // myCoursesButton.onclick = 
+                // addCourseButton.onclick = 
             }
         }
     }
+}
+
+// sign out 
+async function signout()
+{
+    const requestOptions = {
+        method: "POST",
+        redirect: "follow"
+    };
+
+    const response = await fetch("http://localhost:3000/" + `${cons_mode === consumer_modes.ADMIN ? "admin" : "user"}` + "/" + "signout", requestOptions);
+    document.cookie = response.headers.getSetCookie();
+    console.log(document.cookie);
+
+    window.location.assign("/");
 }
 
 //  Switch between SignIn/SignUp operation modes via secondary {  operation mode  }
@@ -176,4 +194,14 @@ async function ViewOwnedCourses()
     const ownedCoursesData = await response.json();
 
     RenderPurchasedCourses(ownedCoursesData.purchasedCourses);
+}
+
+async function viewCreatorCourses()
+{
+
+}
+
+async function addCourse()
+{
+
 }

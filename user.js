@@ -64,6 +64,18 @@ router.post("/signup", async (req, res) =>
     }
 });
 
+router.post("/signout", async (req, res) =>
+{
+    try
+    {
+        res.status(200).clearCookie("token");
+        res.redirect("/");
+    } catch (err)
+    {
+        return res.status(501).send(err);
+    }
+});
+
 router.get("/courses", userMiddleware, async (req, res) =>
 {
     const userId = req.userId;

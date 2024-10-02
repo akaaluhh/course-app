@@ -165,14 +165,33 @@ export function RenderUserLayout(username)
     return { previewButton, coursesButton, signOutButton };
 }
 
-export function RenderAdminLayout()
+export function RenderAdminLayout(username)
 {
+    const gap = "30px";
+
     const maindiv = document.getElementById("maindiv");
     const accountTypeText = document.createElement("span");
-    accountTypeText.innerHTML = "Admin ";
+    accountTypeText.innerHTML = "Admin " + username;
 
     maindiv.appendChild(accountTypeText);
     maindiv.appendChild(document.createElement("br"));
+
+    const myCoursesButton = document.createElement("button");
+    myCoursesButton.id = "my_courses";
+    myCoursesButton.innerText = "My Courses";
+    myCoursesButton.style.marginRight = gap;
+
+    maindiv.appendChild(myCoursesButton);
+
+    const addCourseButton = document.createElement("button");
+    addCourseButton.id = "add_course";
+    addCourseButton.innerText = "Add Course";
+    addCourseButton.style.marginLeft = gap;
+
+    maindiv.appendChild(addCourseButton);
+    maindiv.appendChild(document.createElement("br"));
+
+    return { myCoursesButton, addCourseButton };
 }
 
 
