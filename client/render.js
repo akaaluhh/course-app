@@ -245,12 +245,44 @@ export function PostCourseLayout()
     return { ConfirmButton };
 }
 
+export function RenderAdminCoursePanel(courses)
+{
+    const maindiv = document.getElementById("maindiv");
+    maindiv.appendChild(document.createElement("hr"));
+    for (let i = 0; i < courses.length; i++)
+    {
+        const courseTitle = document.createElement("span");
+        courseTitle.innerText = courses[i].title;
+        courseTitle.className = "main";
+
+        const courseDesc = document.createElement("span");
+        courseDesc.innerText = courses[i].description;
+        courseDesc.className = "main";
+
+        const coursePrice = document.createElement("span");
+        coursePrice.innerText = courses[i].price;
+        coursePrice.className = "main";
+
+        const courseImage = document.createElement("span");
+        courseImage.innerText = courses[i].imageUrl;
+        courseImage.className = "main";
+
+        maindiv.appendChild(courseTitle);
+        maindiv.appendChild(document.createElement("br"));
+        maindiv.appendChild(courseDesc);
+        maindiv.appendChild(document.createElement("br"));
+        maindiv.appendChild(coursePrice);
+        maindiv.appendChild(document.createElement("br"));
+        maindiv.appendChild(courseImage);
+        maindiv.appendChild(document.createElement("hr"));
+    }
+
+}
+
 export function ClearMainDivLayout()
 {
     document.getElementById("maindiv").innerHTML = "";
 }
-
-
 
 export function AdminMode(op_mode)
 {

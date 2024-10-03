@@ -3,7 +3,7 @@ import
 {
     clearInputFields, RenderAdminLayout, RenderUserLayout, RenderCredentialsLayout,
     RenderPreviewCourses, RenderPurchasedCourses, ClearMainDivLayout, AdminMode, UserMode,
-    PostCourseLayout
+    PostCourseLayout, RenderAdminCoursePanel
 } from './render.js';
 
 let op_mode = operation_modes.SIGNIN;
@@ -108,7 +108,7 @@ async function primary()
 
                 const { myCoursesButton, addCourseButton, signOutButton } = RenderAdminLayout(adminDetails.firstName + " " + adminDetails.lastName);
 
-                // myCoursesButton.onclick = 
+                myCoursesButton.onclick = viewCreatorCourses;
                 addCourseButton.onclick = function ()
                 {
                     const { ConfirmButton } = PostCourseLayout();
@@ -204,7 +204,21 @@ async function ViewOwnedCourses()
 
 async function viewCreatorCourses()
 {
+    const requestOptions = {
+        method: "GET",
+    };
 
+    try
+    {
+        const response = await fetch("http://localhost:3000/admin/course/bulk", requestOptions);
+        const result = await response.json();
+        console.log(result);
+        RenderAdminCoursePanel(result);
+    }
+    catch (err)
+    {
+        console.log(err);
+    }
 }
 
 async function addCourse()
