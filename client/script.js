@@ -109,7 +109,11 @@ async function primary()
                 const { myCoursesButton, addCourseButton, signOutButton } = RenderAdminLayout(adminDetails.firstName + " " + adminDetails.lastName);
 
                 // myCoursesButton.onclick = 
-                addCourseButton.onclick = PostCourseLayout;
+                addCourseButton.onclick = function ()
+                {
+                    const { ConfirmButton } = PostCourseLayout();
+                    ConfirmButton.onclick = addCourse;
+                };
                 signOutButton.onclick = signout;
             }
         }
@@ -205,5 +209,34 @@ async function viewCreatorCourses()
 
 async function addCourse()
 {
+    const Title = document.getElementById("input_CourseTitle").value;
+    const Desc = document.getElementById("input_CourseDesc").value;
+    const Price = document.getElementById("input_CoursePrice").value;
 
+    console.log(Title, Desc, parseInt(Price));
+
+    const requestBody = {
+        title: Title,
+        description: Desc,
+        price: Price,
+        imageUrl: "google.com"
+    };
+
+    const requestOptions = {
+        method: "POST",
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+    };
+
+    try
+    {
+        const response = await fetch("http://localhost:3000/admin/course", requestOptions);
+        console.log(response.json().body);
+    }
+    catch (err)
+    {
+        console.log(err);
+    }
 }

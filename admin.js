@@ -98,6 +98,8 @@ router.post("/course", adminMiddleware, async (req, res) =>
 {
     const userId = req.userId;
 
+    console.log(req.body);
+
     try
     {
         const course = await courseModel.create({
@@ -110,7 +112,7 @@ router.post("/course", adminMiddleware, async (req, res) =>
         res.status(200).json({ message: "course created !", courseId: course._id });
     } catch (err)
     {
-        res.status(500).json({ message: "error creating the course !" });
+        res.status(500).send(err);
     }
 });
 
