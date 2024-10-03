@@ -45,17 +45,17 @@ export function RenderCredentialsLayout(op_mode, cons_mode)
     lnameInput.placeholder = "Last Name";
     lnameInput.id = "input_lname";
 
-    const primaryButton = document.createElement("button");
-    primaryButton.id = "primary_button";
-    primaryButton.innerText = `${op_mode === operation_modes.SIGNIN ? "SignIn" : "SignUp"}`;
+    const RegisterButton = document.createElement("button");
+    RegisterButton.id = "Register_button";
+    RegisterButton.innerText = `${op_mode === operation_modes.SIGNIN ? "SignIn" : "SignUp"}`;
 
-    const secondaryButton = document.createElement("button");
-    secondaryButton.id = "secondary_button";
-    secondaryButton.innerText = `${op_mode === operation_modes.SIGNIN ? "SignUp" : "SignIn"}`;
+    const switchOperationButton = document.createElement("button");
+    switchOperationButton.id = "switchOperation_button";
+    switchOperationButton.innerText = `${op_mode === operation_modes.SIGNIN ? "SignUp" : "SignIn"}`;
 
-    const tertiaryButton = document.createElement("button");
-    tertiaryButton.id = "tertiary_button";
-    tertiaryButton.innerText = `${cons_mode === consumer_modes.ADMIN ? "Browse" : "Creator"}`;
+    const switchUserButton = document.createElement("button");
+    switchUserButton.id = "switchUser_button";
+    switchUserButton.innerText = `${cons_mode === consumer_modes.ADMIN ? "Browse" : "Creator"}`;
 
     const operationModeText = document.createElement("span");
     operationModeText.className = "operation_mode";
@@ -77,15 +77,15 @@ export function RenderCredentialsLayout(op_mode, cons_mode)
         inputdiv.innerHTML += "<br>";
         inputdiv.appendChild(lnameInput);
     }
-    maindiv.appendChild(primaryButton);
+    maindiv.appendChild(RegisterButton);
     maindiv.appendChild(document.createElement("br"));  // NOTE:- maindiv.innerHTML += "<br>" messes up the function binding for the above button
     maindiv.appendChild(operationModeText);
-    maindiv.appendChild(secondaryButton);
+    maindiv.appendChild(switchOperationButton);
     maindiv.appendChild(document.createElement("br"));
     maindiv.appendChild(consumerModeText);
-    maindiv.appendChild(tertiaryButton);
+    maindiv.appendChild(switchUserButton);
 
-    return { primaryButton, secondaryButton, tertiaryButton };
+    return { RegisterButton, switchOperationButton, switchUserButton };
 }
 
 export function RenderPreviewCourses(courses)
@@ -267,6 +267,10 @@ export function RenderAdminCoursePanel(courses)
         courseImage.innerText = courses[i].imageUrl;
         courseImage.className = "main";
 
+        const editButton = document.createElement("button");
+        editButton.id = "edit_course";
+        editButton.innerText = "Edit";
+
         maindiv.appendChild(courseTitle);
         maindiv.appendChild(document.createElement("br"));
         maindiv.appendChild(courseDesc);
@@ -274,6 +278,8 @@ export function RenderAdminCoursePanel(courses)
         maindiv.appendChild(coursePrice);
         maindiv.appendChild(document.createElement("br"));
         maindiv.appendChild(courseImage);
+        maindiv.appendChild(document.createElement("br"));
+        maindiv.appendChild(editButton);
         maindiv.appendChild(document.createElement("hr"));
     }
 
@@ -292,8 +298,8 @@ export function AdminMode(op_mode)
     const consumer_mode_text = document.getElementById("consumer_mode");
     consumer_mode_text.innerText = "Browse courses !";
 
-    const tertiary_button = document.getElementById("tertiary_button");
-    tertiary_button.innerText = "Browse";
+    const switchUser_button = document.getElementById("switchUser_button");
+    switchUser_button.innerText = "Browse";
 }
 
 export function UserMode(op_mode)
@@ -304,6 +310,6 @@ export function UserMode(op_mode)
     const consumer_mode_text = document.getElementById("consumer_mode");
     consumer_mode_text.innerText = "Are you a Creator ?";
 
-    const tertiary_button = document.getElementById("tertiary_button");
-    tertiary_button.innerText = "Creator";
+    const switchUser_button = document.getElementById("switchUser_button");
+    switchUser_button.innerText = "Creator";
 }

@@ -15,15 +15,15 @@ function refreshCredentialLayout()
 {
     ClearMainDivLayout();
 
-    const { primaryButton, secondaryButton, tertiaryButton } = RenderCredentialsLayout(op_mode, cons_mode);
+    const { RegisterButton, switchOperationButton, switchUserButton } = RenderCredentialsLayout(op_mode, cons_mode);
 
-    primaryButton.onclick = primary;
-    secondaryButton.onclick = secondary;
-    tertiaryButton.onclick = tertiary;
+    RegisterButton.onclick = Register;
+    switchOperationButton.onclick = switchOperation;
+    switchUserButton.onclick = switchUser;
 }
 
-//  Send SignIn/SignOut RPCs via primary
-async function primary()
+//  Send SignIn/SignOut RPCs via Register
+async function Register()
 {
     const input_email = document.getElementById("input_email").value;
     const input_pw = document.getElementById("input_pw").value;
@@ -135,8 +135,8 @@ async function signout()
     window.location.assign("/");
 }
 
-//  Switch between SignIn/SignUp operation modes via secondary {  operation mode  }
-async function secondary()
+//  Switch between SignIn/SignUp operation modes via switchOperation {  operation mode  }
+async function switchOperation()
 {
     console.log("SECONDARY PRINTED");
     clearInputFields();
@@ -156,8 +156,8 @@ async function secondary()
     //Create the sign up widget layout
 }
 
-//  Switch between User/Admin consumer modes via tertiary   {  consumer mode  }
-async function tertiary()
+//  Switch between User/Admin consumer modes via switchUser   {  consumer mode  }
+async function switchUser()
 {
     clearInputFields();
     switch (cons_mode)
