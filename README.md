@@ -1,2 +1,2 @@
 # course-app
-Simple Course Selling website made in Vanilla JS with DOM manipulation
+Simple Single Page Course App - A sleek and functional course selling platform built with Vanilla JavaScript, HTML, and CSS. Harnesses the power of DOM manipulation for a seamless user experience.
